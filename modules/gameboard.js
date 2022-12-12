@@ -33,6 +33,9 @@ export class Gameboard {
       square.ship = ship;
       square = dir == 'h' ? square.right : square.bottom;
     }
+    ship.x = x;
+    ship.y = y;
+    ship.dir = dir;
     this.placedShips.push(ship);
   }
 }

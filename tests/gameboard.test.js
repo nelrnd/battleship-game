@@ -32,6 +32,7 @@ test('Placing a ship', () => {
   gameboard.placeShip(ship, 3, 4);
   expect(gameboard.placedShips.length).toBe(1);
   expect(gameboard.findSquare(3, 4).ship).toBe(ship);
+  expect(ship.isPlaced).toBe(true);
 });
 
 test('Placing ship horizontally', () => {

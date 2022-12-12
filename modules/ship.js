@@ -12,6 +12,10 @@ export class Ship {
   get isSunk() {
     return this.hitsNb >= this.length;
   }
+
+  get isPlaced() {
+    return !!(this.x && this.y && this.dir);
+  }
 }
 
 export const fleet = [
