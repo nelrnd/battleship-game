@@ -3,6 +3,10 @@
   --square-size: calc(var(--gameboard-size) / 10);
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   height: 100%;
@@ -27,7 +31,14 @@ h1 {
 .gameboard {
   width: var(--gameboard-size);
   height: var(--gameboard-size);
-  border: solid 1px black;
+  outline: solid 1px black;
+
+  position: relative;
+}
+
+.grid {
+  width: 100%;
+  height: 100%;
 
   display: grid;
   grid-template-columns: repeat(10, 1fr);
@@ -35,5 +46,21 @@ h1 {
 }
 
 .square {
+  width: var(--square-size);
+  height: var(--square-size);
   border: solid 1px black;
+}
+
+.ships {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+.ship {
+  position: absolute;
+  background-color: red;
+  outline: solid 1px black;
+
+  display: grid;
 }
