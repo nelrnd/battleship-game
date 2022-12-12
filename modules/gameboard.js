@@ -7,7 +7,7 @@ export class Gameboard {
   createGrid() {
     const grid = [];
     for (let i = 0; i < 100; i++) {
-      const square = {};
+      const square = { x: i % 10, y: Math.floor(i / 10) };
       grid.push(square);
     }
     return grid;
