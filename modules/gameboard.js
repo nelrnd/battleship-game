@@ -12,4 +12,8 @@ export class Gameboard {
     }
     return grid;
   }
+
+  findSquare(x, y) {
+    return this.grid.find((square) => square.x == x && square.y == y);
+  }
 }
