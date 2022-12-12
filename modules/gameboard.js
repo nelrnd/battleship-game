@@ -26,4 +26,13 @@ export class Gameboard {
       square.right = this.findSquare(square.x + 1, square.y, grid);
     }
   }
+
+  placeShip(ship, x, y, dir = 'h') {
+    let square = this.findSquare(x, y);
+    for (let i = 0; i < ship.length; i++) {
+      square.ship = ship;
+      square = dir == 'h' ? square.right : square.bottom;
+    }
+    this.placedShips.push(ship);
+  }
 }

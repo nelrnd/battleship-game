@@ -1,4 +1,5 @@
 import { Gameboard } from '../modules/gameboard.js';
+import { Ship } from '../modules/ship.js';
 
 test('Creating a gameboard', () => {
   const gameboard = new Gameboard();
@@ -23,4 +24,28 @@ test('Linking squares', () => {
   expect(square.left.y).toBe(7);
   expect(square.right.x).toBe(3);
   expect(square.right.y).toBe(7);
+});
+
+test('Placing a ship', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(3);
+  gameboard.placeShip(ship, 3, 4);
+  expect(gameboard.placedShips.length).toBe(1);
+  expect(gameboard.findSquare(3, 4).ship).toBe(ship);
+});
+
+test('Placing ship horizontally', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(3);
+  gameboard.placeShip(ship, 2, 2, 'h');
+  expect(gameboard.findSquare(4, 2).ship).toBe(ship);
+  expect(gameboard.findSquare(2, 4).ship).toBeUndefined();
+});
+
+test('Placing ship vertically', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(3);
+  gameboard.placeShip(ship, 2, 2, 'v');
+  expect(gameboard.findSquare(2, 4).ship).toBe(ship);
+  expect(gameboard.findSquare(4, 2).ship).toBeUndefined();
 });
