@@ -50,3 +50,19 @@ test('Placing ship vertically', () => {
   expect(gameboard.findSquare(2, 4).ship).toBe(ship);
   expect(gameboard.findSquare(4, 2).ship).toBeUndefined();
 });
+
+test('Try placing ship on top of another', () => {
+  const gameboard = new Gameboard();
+  gameboard.placeShip(new Ship(3), 2, 2, 'h');
+  expect(() => gameboard.placeShip(new Ship(3), 3, 1, 'v')).toThrow(
+    'Invalid ship placement'
+  );
+});
+
+test('Try placing ship that overflow outside gameboard', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(5);
+  expect(() => gameboard.placeShip(ship, 7, 1)).toThrow(
+    'Invalid ship placement'
+  );
+});

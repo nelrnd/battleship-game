@@ -28,6 +28,10 @@ export class Gameboard {
   }
 
   placeShip(ship, x, y, dir = 'h') {
+    // check if ship placement is valid
+    const isValid = this.checkShipPlacement(ship, x, y, dir);
+    if (!isValid) throw 'Invalid ship placement';
+
     let square = this.findSquare(x, y);
     for (let i = 0; i < ship.length; i++) {
       square.ship = ship;
@@ -37,5 +41,14 @@ export class Gameboard {
     ship.y = y;
     ship.dir = dir;
     this.placedShips.push(ship);
+  }
+
+  checkShipPlacement(ship, x, y, dir) {
+    let square = this.findSquare(x, y);
+    for (let i = 0; i < ship.length; i++) {
+      if (!square || square.ship) return false;
+      square = dir == 'h' ? square.right : square.bottom;
+    }
+    return true;
   }
 }
