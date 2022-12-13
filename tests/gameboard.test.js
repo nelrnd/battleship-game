@@ -66,3 +66,29 @@ test('Try placing ship that overflow outside gameboard', () => {
     'Invalid ship placement'
   );
 });
+
+test('Moving a ship after having placed it', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(3);
+  gameboard.placeShip(ship, 2, 2, 'h');
+  gameboard.placeShip(ship, 4, 1, 'v');
+  expect(gameboard.placedShips.length).toBe(1);
+  expect(gameboard.findSquare(3, 2).ship).toBeUndefined();
+  expect(gameboard.findSquare(4, 3).ship).toBe(ship);
+});
+
+test('Removing a ship after placing it', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(3);
+  gameboard.placeShip(ship, 2, 2, 'v');
+  gameboard.removeShip(ship);
+  expect(gameboard.placedShips.length).toBe(0);
+  expect(gameboard.findSquare(2, 2).ship).toBeUndefined();
+  expect(ship.isPlaced).toBe(false);
+});
+
+test('Try removing a ship that is not placed', () => {
+  const gameboard = new Gameboard();
+  const ship = new Ship(3);
+  expect(() => gameboard.removeShip(ship)).toThrow('Ship not found');
+});

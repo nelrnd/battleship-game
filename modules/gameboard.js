@@ -32,6 +32,11 @@ export class Gameboard {
     const isValid = this.checkShipPlacement(ship, x, y, dir);
     if (!isValid) throw 'Invalid ship placement';
 
+    // if ship is already placed, remove it first
+    if (this.placedShips.includes(ship)) {
+      this.removeShip(ship);
+    }
+
     let square = this.findSquare(x, y);
     for (let i = 0; i < ship.length; i++) {
       square.ship = ship;
@@ -43,10 +48,26 @@ export class Gameboard {
     this.placedShips.push(ship);
   }
 
+  removeShip(ship) {
+    if (!this.placedShips.includes(ship)) throw 'Ship not found';
+
+    let square = this.findSquare(ship.x, ship.y);
+    for (let i = 0; i < ship.length; i++) {
+      square.ship = undefined;
+      square = ship.dir == 'h' ? square.right : square.bottom;
+    }
+
+    ship.x = undefined;
+    ship.y = undefined;
+    ship.dir = undefined;
+    const shipIndex = this.placedShips.findIndex((s) => s == ship);
+    this.placedShips.splice(shipIndex, 1);
+  }
+
   checkShipPlacement(ship, x, y, dir) {
     let square = this.findSquare(x, y);
     for (let i = 0; i < ship.length; i++) {
-      if (!square || square.ship) return false;
+      if (!square || (square.ship && square.ship !== ship)) return false;
       square = dir == 'h' ? square.right : square.bottom;
     }
     return true;
