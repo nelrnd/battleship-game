@@ -69,10 +69,15 @@ export function createHarborElem(ships) {
   return harborElem;
 }
 
+/* Drag ship */
+
 const mouseCoords = { startX: 0, startY: 0, newX: 0, newY: 0 };
 
 function makeShipElemMovable(ship) {
-  ship.addEventListener('mousedown', function (e) {
+  ship.addEventListener('touchstart', dragStart);
+  ship.addEventListener('mousedown', dragStart);
+
+  function dragStart(e) {
     e.preventDefault();
 
     const startTop = ship.offsetTop;
@@ -80,24 +85,42 @@ function makeShipElemMovable(ship) {
 
     ship.classList.add('moving');
 
-    mouseCoords.startX = e.clientX;
-    mouseCoords.startY = e.clientY;
+    if (e.type === 'touchstart') {
+      mouseCoords.startX = e.touches[0].clientX;
+      mouseCoords.startY = e.touches[0].clientY;
+    } else {
+      mouseCoords.startX = e.clientX;
+      mouseCoords.startY = e.clientY;
+    }
 
+    document.addEventListener('touchmove', moveShip);
     document.addEventListener('mousemove', moveShip);
 
-    document.addEventListener('mouseup', function () {
-      ship.classList.remove('moving');
+    document.addEventListener('touchend', dragEnd);
+    document.addEventListener('mouseup', dragEnd);
+
+    function dragEnd() {
       setShipPos(ship, startLeft, startTop);
+      ship.classList.remove('moving');
+      document.removeEventListener('touchmove', moveShip);
       document.removeEventListener('mousemove', moveShip);
-    });
-  });
+    }
+  }
 
   function moveShip(e) {
-    mouseCoords.newX = mouseCoords.startX - e.clientX;
-    mouseCoords.newY = mouseCoords.startY - e.clientY;
+    if (e.type === 'touchmove') {
+      mouseCoords.newX = mouseCoords.startX - e.touches[0].clientX;
+      mouseCoords.newY = mouseCoords.startY - e.touches[0].clientY;
 
-    mouseCoords.startX = e.clientX;
-    mouseCoords.startY = e.clientY;
+      mouseCoords.startX = e.touches[0].clientX;
+      mouseCoords.startY = e.touches[0].clientY;
+    } else {
+      mouseCoords.newX = mouseCoords.startX - e.clientX;
+      mouseCoords.newY = mouseCoords.startY - e.clientY;
+
+      mouseCoords.startX = e.clientX;
+      mouseCoords.startY = e.clientY;
+    }
 
     const moveX = ship.offsetLeft - mouseCoords.newX;
     const moveY = ship.offsetTop - mouseCoords.newY;
