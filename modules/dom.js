@@ -1,3 +1,5 @@
+import { fleet } from './ship.js';
+
 const pageContent = document.querySelector('#content');
 
 function createSquareElem() {
@@ -6,7 +8,7 @@ function createSquareElem() {
   return squareElem;
 }
 
-export function createShipElem(ship) {
+function createShipElem(ship) {
   const shipElem = document.createElement('div');
   shipElem.className = 'ship';
 
@@ -53,6 +55,18 @@ export function createGameboardElem(gameboard) {
   return gameboardElem;
 }
 
-export function displayGameboardElem(gameboardElem) {
-  pageContent.appendChild(gameboardElem);
+export function createHarborElem(ships) {
+  const harborElem = document.createElement('div');
+  harborElem.className = 'harbor';
+
+  for (const ship of ships) {
+    const shipElem = createShipElem(ship);
+    harborElem.appendChild(shipElem);
+  }
+
+  return harborElem;
+}
+
+export function displayElem(elem) {
+  pageContent.appendChild(elem);
 }

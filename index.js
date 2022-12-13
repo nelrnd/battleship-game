@@ -1,15 +1,10 @@
 import { Gameboard } from './modules/gameboard.js';
-import {
-  createShipElem,
-  createGameboardElem,
-  displayGameboardElem,
-} from './modules/dom.js';
-import { Ship } from './modules/ship.js';
+import { createGameboardElem, displayElem } from './modules/dom.js';
+import { game } from './modules/game.js';
 
 const gameboard = new Gameboard();
-const ship = new Ship(3);
-gameboard.placeShip(ship, 4, 2);
 
 const gameboardElem = createGameboardElem(gameboard);
+displayElem(gameboardElem);
 
-displayGameboardElem(gameboardElem);
+game.setPlaceShips();

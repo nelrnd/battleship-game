@@ -1,6 +1,7 @@
 :root {
   --gameboard-size: 500px;
   --square-size: calc(var(--gameboard-size) / 10);
+  --main-color: #bdc1df;
 }
 
 * {
@@ -26,6 +27,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
+  gap: 4rem;
 }
 
 .gameboard {
@@ -59,8 +61,34 @@ h1 {
 }
 .ship {
   position: absolute;
-  background-color: red;
+  background-color: var(--main-color);
   outline: solid 1px black;
 
   display: grid;
+}
+
+.harbor {
+  width: calc(var(--square-size) * 3);
+  height: var(--gameboard-size);
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+
+  position: relative;
+}
+
+.harbor .ship:nth-child(2) {
+  grid-row-start: 7;
+}
+.harbor .ship:nth-child(3),
+.harbor .ship:nth-child(4),
+.harbor .ship:nth-child(5) {
+  grid-column-start: 3;
+}
+.harbor .ship:nth-child(4) {
+  grid-row-start: 5;
+}
+.harbor .ship:nth-child(5) {
+  grid-row-start: 9;
 }
