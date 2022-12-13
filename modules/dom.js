@@ -61,10 +61,54 @@ export function createHarborElem(ships) {
 
   for (const ship of ships) {
     const shipElem = createShipElem(ship);
+    makeShipElemMovable(shipElem);
+    shipElem.classList.add('moveable');
     harborElem.appendChild(shipElem);
   }
 
   return harborElem;
+}
+
+const mouseCoords = { startX: 0, startY: 0, newX: 0, newY: 0 };
+
+function makeShipElemMovable(ship) {
+  ship.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+
+    const startTop = ship.offsetTop;
+    const startLeft = ship.offsetLeft;
+
+    ship.classList.add('moving');
+
+    mouseCoords.startX = e.clientX;
+    mouseCoords.startY = e.clientY;
+
+    document.addEventListener('mousemove', moveShip);
+
+    document.addEventListener('mouseup', function () {
+      ship.classList.remove('moving');
+      setShipPos(ship, startLeft, startTop);
+      document.removeEventListener('mousemove', moveShip);
+    });
+  });
+
+  function moveShip(e) {
+    mouseCoords.newX = mouseCoords.startX - e.clientX;
+    mouseCoords.newY = mouseCoords.startY - e.clientY;
+
+    mouseCoords.startX = e.clientX;
+    mouseCoords.startY = e.clientY;
+
+    const moveX = ship.offsetLeft - mouseCoords.newX;
+    const moveY = ship.offsetTop - mouseCoords.newY;
+
+    setShipPos(ship, moveX, moveY);
+  }
+
+  function setShipPos(ship, posX, posY) {
+    ship.style.top = posY + 'px';
+    ship.style.left = posX + 'px';
+  }
 }
 
 export function displayElem(elem) {

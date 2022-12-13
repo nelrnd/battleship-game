@@ -7,4 +7,4 @@ const gameboard = new Gameboard();
 const gameboardElem = createGameboardElem(gameboard);
 displayElem(gameboardElem);
 
-game.setPlaceShips();
+game.setShipPlacement();

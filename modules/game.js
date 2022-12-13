@@ -4,7 +4,7 @@ import { fleet, Ship } from './ship.js';
 export const game = (() => {
   const players = [];
 
-  const setPlaceShips = () => {
+  const setShipPlacement = () => {
     const ships = [];
     for (const ship of fleet) {
       ships.push(new Ship(ship.length, ship.name));
@@ -14,6 +14,6 @@ export const game = (() => {
   };
 
   return {
-    setPlaceShips,
+    setShipPlacement,
   };
 })();
