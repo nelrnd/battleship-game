@@ -61,29 +61,48 @@ export function createHarborElem(ships) {
 
   for (const ship of ships) {
     const shipElem = createShipElem(ship);
-    makeShipElemMovable(shipElem);
-    shipElem.classList.add('moveable');
+    ship.elem = shipElem;
     harborElem.appendChild(shipElem);
   }
 
   return harborElem;
 }
 
-/* Drag ship */
+export function displayElem(elem) {
+  pageContent.appendChild(elem);
+}
+
+/* Drag ships */
 
 const mouseCoords = { startX: 0, startY: 0, newX: 0, newY: 0 };
+const gridCoords = { x: 0, y: 0 };
 
-function makeShipElemMovable(ship) {
-  ship.addEventListener('touchstart', dragStart);
-  ship.addEventListener('mousedown', dragStart);
+export function setGridCoords(e) {
+  // get distance between mouse position and top left corner of gameboard
+  const leftDist = e.clientX - rect.left;
+  const topDist = e.clientY - rect.top;
+
+  // get x and y coords of mouse on grid
+  const x = Math.floor((leftDist * 10) / rect.width);
+  const y = Math.floor((topDist * 10) / rect.height);
+
+  gridCoords.x = x;
+  gridCoords.y = y;
+
+  console.log(x, y);
+}
+
+export function makeElemDraggable(elem) {
+  elem.classList.add('moveable');
+
+  elem.addEventListener('touchstart', dragStart);
+  elem.addEventListener('mousedown', dragStart);
+
+  let startTop, startLeft;
 
   function dragStart(e) {
-    e.preventDefault();
-
-    const startTop = ship.offsetTop;
-    const startLeft = ship.offsetLeft;
-
-    ship.classList.add('moving');
+    startTop = elem.offsetTop;
+    startLeft = elem.offsetLeft;
 
     if (e.type === 'touchstart') {
       mouseCoords.startX = e.touches[0].clientX;
@@ -93,21 +112,16 @@ function makeShipElemMovable(ship) {
       mouseCoords.startY = e.clientY;
     }
 
-    document.addEventListener('touchmove', moveShip);
-    document.addEventListener('mousemove', moveShip);
+    document.addEventListener('touchmove', dragElem);
+    document.addEventListener('mousemove', dragElem);
 
     document.addEventListener('touchend', dragEnd);
     document.addEventListener('mouseup', dragEnd);
-
-    function dragEnd() {
-      setShipPos(ship, startLeft, startTop);
-      ship.classList.remove('moving');
-      document.removeEventListener('touchmove', moveShip);
-      document.removeEventListener('mousemove', moveShip);
-    }
   }
 
-  function moveShip(e) {
+  function dragElem(e) {
+    elem.classList.add('moving');
+
     if (e.type === 'touchmove') {
       mouseCoords.newX = mouseCoords.startX - e.touches[0].clientX;
       mouseCoords.newY = mouseCoords.startY - e.touches[0].clientY;
@@ -122,18 +136,23 @@ function makeShipElemMovable(ship) {
       mouseCoords.startY = e.clientY;
     }
 
-    const moveX = ship.offsetLeft - mouseCoords.newX;
-    const moveY = ship.offsetTop - mouseCoords.newY;
+    const moveX = elem.offsetLeft - mouseCoords.newX;
+    const moveY = elem.offsetTop - mouseCoords.newY;
 
-    setShipPos(ship, moveX, moveY);
+    setElemPos(elem, moveX, moveY);
   }
 
-  function setShipPos(ship, posX, posY) {
-    ship.style.top = posY + 'px';
-    ship.style.left = posX + 'px';
+  function dragEnd() {
+    elem.classList.remove('moving');
+
+    document.removeEventListener('touchmove', dragElem);
+    document.removeEventListener('mousemove', dragElem);
+
+    setElemPos(elem, startLeft, startTop);
   }
 }
 
-export function displayElem(elem) {
-  pageContent.appendChild(elem);
+function setElemPos(elem, posX, posY) {
+  elem.style.top = posY + 'px';
+  elem.style.left = posX + 'px';
 }

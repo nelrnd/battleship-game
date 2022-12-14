@@ -1,19 +1,39 @@
-import { createHarborElem, displayElem } from './dom.js';
+import {
+  createGameboardElem,
+  createHarborElem,
+  displayElem,
+  makeElemDraggable,
+} from './dom.js';
+import { Gameboard } from './gameboard.js';
 import { fleet, Ship } from './ship.js';
 
 export const game = (() => {
   const players = [];
 
-  const setShipPlacement = () => {
+  const setPlacingShips = () => {
+    // create and display gameboard elem
+    const gameboard = new Gameboard();
+    const gameboardElem = createGameboardElem(gameboard);
+    displayElem(gameboardElem);
+
+    // create ships
     const ships = [];
-    for (const ship of fleet) {
-      ships.push(new Ship(ship.length, ship.name));
+    for (let ship of fleet) {
+      ship = new Ship(ship.length, ship.name);
+      ships.push(ship);
     }
+
+    // create and display harbor elem
     const harborElem = createHarborElem(ships);
     displayElem(harborElem);
+
+    // make ship elems draggable
+    for (const ship of ships) {
+      makeElemDraggable(ship.elem);
+    }
   };
 
   return {
-    setShipPlacement,
+    setPlacingShips,
   };
 })();
