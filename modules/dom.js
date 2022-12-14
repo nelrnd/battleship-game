@@ -76,21 +76,7 @@ export function displayElem(elem) {
 
 const mouseCoords = { startX: 0, startY: 0, newX: 0, newY: 0 };
 const gridCoords = { x: 0, y: 0 };
-
-export function setGridCoords(e) {
-  // get distance between mouse position and top left corner of gameboard
-  const leftDist = e.clientX - rect.left;
-  const topDist = e.clientY - rect.top;
-
-  // get x and y coords of mouse on grid
-  const x = Math.floor((leftDist * 10) / rect.width);
-  const y = Math.floor((topDist * 10) / rect.height);
-
-  gridCoords.x = x;
-  gridCoords.y = y;
-
-  console.log(x, y);
-}
+let pointerOnGrid = false;
 
 export function makeElemDraggable(elem) {
   elem.classList.add('moveable');
@@ -115,8 +101,14 @@ export function makeElemDraggable(elem) {
     document.addEventListener('touchmove', dragElem);
     document.addEventListener('mousemove', dragElem);
 
+    document.addEventListener('touchmove', checkIfPointerOnGrid);
+    document.addEventListener('mousemove', checkIfPointerOnGrid);
+
     document.addEventListener('touchend', dragEnd);
     document.addEventListener('mouseup', dragEnd);
+
+    document.addEventListener('touchend', stopCheckingIfPointerOnGrid);
+    document.addEventListener('mouseup', stopCheckingIfPointerOnGrid);
   }
 
   function dragElem(e) {
@@ -155,4 +147,52 @@ export function makeElemDraggable(elem) {
 function setElemPos(elem, posX, posY) {
   elem.style.top = posY + 'px';
   elem.style.left = posX + 'px';
+}
+
+function checkIfPointerOnGrid(e) {
+  const grid = document.querySelector('.gameboard');
+  const rect = grid.getBoundingClientRect();
+
+  if (e.type === 'touchmove') {
+    pointerOnGrid =
+      e.touches[0].clientX > rect.left &&
+      e.touches[0].clientX < rect.width + rect.left &&
+      e.touches[0].clientY > rect.top &&
+      e.touches[0].clientY < rect.height + rect.top;
+  } else {
+    pointerOnGrid =
+      e.clientX > rect.left &&
+      e.clientX < rect.width + rect.left &&
+      e.clientY > rect.top &&
+      e.clientY < rect.height + rect.top;
+  }
+
+  document.querySelector('#test').textContent = pointerOnGrid;
+}
+
+function stopCheckingIfPointerOnGrid() {
+  document.removeEventListener('touchmove', checkIfPointerOnGrid);
+  document.removeEventListener('mousemove', checkIfPointerOnGrid);
+}
+
+function getGridCoords(e) {
+  const grid = document.querySelector('.gameboard');
+  const rect = grid.getBoundingClientRect();
+
+  // get distance between pointer position and top left corner of grid
+  let leftDist, topDist;
+  if (e.type === 'touchmove') {
+    leftDist = e.touches[0].clientX - rect.left;
+    topDist = e.touches[0].clientY - rect.top;
+  } else {
+    leftDist = e.clientX - rect.left;
+    topDist = e.clientY - rect.top;
+  }
+
+  // get x and y coords of mouse on grid
+  const x = Math.floor((leftDist * 10) / rect.width);
+  const y = Math.floor((topDist * 10) / rect.height);
+
+  gridCoords.x = x;
+  gridCoords.y = y;
 }
