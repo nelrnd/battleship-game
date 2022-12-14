@@ -98,40 +98,56 @@ export function makeElemDraggable(elem) {
       mouseCoords.startY = e.clientY;
     }
 
-    document.addEventListener('touchmove', dragElem);
-    document.addEventListener('mousemove', dragElem);
-
     document.addEventListener('touchmove', checkIfPointerOnGrid);
     document.addEventListener('mousemove', checkIfPointerOnGrid);
 
-    document.addEventListener('touchend', dragEnd);
-    document.addEventListener('mouseup', dragEnd);
+    document.addEventListener('touchmove', dragElem);
+    document.addEventListener('mousemove', dragElem);
 
     document.addEventListener('touchend', stopCheckingIfPointerOnGrid);
     document.addEventListener('mouseup', stopCheckingIfPointerOnGrid);
+
+    document.addEventListener('touchend', dragEnd);
+    document.addEventListener('mouseup', dragEnd);
   }
 
   function dragElem(e) {
     elem.classList.add('moving');
 
-    if (e.type === 'touchmove') {
-      mouseCoords.newX = mouseCoords.startX - e.touches[0].clientX;
-      mouseCoords.newY = mouseCoords.startY - e.touches[0].clientY;
-
-      mouseCoords.startX = e.touches[0].clientX;
-      mouseCoords.startY = e.touches[0].clientY;
+    if (pointerOnGrid) {
+      dragElemOnGrid();
     } else {
-      mouseCoords.newX = mouseCoords.startX - e.clientX;
-      mouseCoords.newY = mouseCoords.startY - e.clientY;
+      if (e.type === 'touchmove') {
+        mouseCoords.newX = mouseCoords.startX - e.touches[0].clientX;
+        mouseCoords.newY = mouseCoords.startY - e.touches[0].clientY;
 
-      mouseCoords.startX = e.clientX;
-      mouseCoords.startY = e.clientY;
+        mouseCoords.startX = e.touches[0].clientX;
+        mouseCoords.startY = e.touches[0].clientY;
+      } else {
+        mouseCoords.newX = mouseCoords.startX - e.clientX;
+        mouseCoords.newY = mouseCoords.startY - e.clientY;
+
+        mouseCoords.startX = e.clientX;
+        mouseCoords.startY = e.clientY;
+      }
+
+      const moveX = elem.offsetLeft - mouseCoords.newX;
+      const moveY = elem.offsetTop - mouseCoords.newY;
+
+      setElemPos(elem, moveX, moveY);
     }
+  }
 
-    const moveX = elem.offsetLeft - mouseCoords.newX;
-    const moveY = elem.offsetTop - mouseCoords.newY;
+  function dragElemOnGrid() {
+    const grid = document.querySelector('.gameboard');
+    const rect = grid.getBoundingClientRect();
+
+    const moveX = gridCoords.x * (rect.width / 10);
+    const moveY = gridCoords.y * (rect.height / 10);
 
     setElemPos(elem, moveX, moveY);
+
+    console.log(moveX);
   }
 
   function dragEnd() {
@@ -173,6 +189,7 @@ function checkIfPointerOnGrid(e) {
 function stopCheckingIfPointerOnGrid() {
   document.removeEventListener('touchmove', checkIfPointerOnGrid);
   document.removeEventListener('mousemove', checkIfPointerOnGrid);
+  pointerOnGrid = false;
 }
 
 function getGridCoords(e) {
@@ -190,9 +207,12 @@ function getGridCoords(e) {
   }
 
   // get x and y coords of mouse on grid
-  const x = Math.floor((leftDist * 10) / rect.width);
-  const y = Math.floor((topDist * 10) / rect.height);
+  const x = Math.floor((leftDist * 10) / (rect.width - 1));
+  const y = Math.floor((topDist * 10) / (rect.height - 1));
 
   gridCoords.x = x;
   gridCoords.y = y;
 }
+
+document.addEventListener('mousemove', getGridCoords);
+document.addEventListener('touchmove', getGridCoords);
