@@ -81,21 +81,6 @@ h1 {
   position: relative;
 }
 
-.harbor .ship:nth-child(2) {
-  top: calc(var(--square-size) * 6);
-}
-.harbor .ship:nth-child(3),
-.harbor .ship:nth-child(4),
-.harbor .ship:nth-child(5) {
-  left: calc(var(--square-size) * 2);
-}
-.harbor .ship:nth-child(4) {
-  top: calc(var(--square-size) * 4);
-}
-.harbor .ship:nth-child(5) {
-  top: calc(var(--square-size) * 8);
-}
-
 .moveable {
   cursor: move;
 }

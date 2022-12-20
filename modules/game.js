@@ -1,6 +1,7 @@
 import {
   createGameboardElem,
   createHarborElem,
+  createShipElem,
   displayElem,
   makeElemDraggable,
 } from './dom.js';
@@ -16,10 +17,11 @@ export const game = (() => {
     const gameboardElem = createGameboardElem(gameboard);
     displayElem(gameboardElem);
 
-    // create ships
+    // create ships and ship elems
     const ships = [];
     for (let ship of fleet) {
       ship = new Ship(ship.length, ship.name);
+      ship.elem = createShipElem(ship);
       ships.push(ship);
     }
 

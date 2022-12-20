@@ -8,7 +8,7 @@ function createSquareElem() {
   return squareElem;
 }
 
-function createShipElem(ship) {
+export function createShipElem(ship) {
   const shipElem = document.createElement('div');
   shipElem.className = 'ship';
 
@@ -60,10 +60,23 @@ export function createHarborElem(ships) {
   harborElem.className = 'harbor';
 
   for (const ship of ships) {
-    const shipElem = createShipElem(ship);
-    ship.elem = shipElem;
-    harborElem.appendChild(shipElem);
+    harborElem.appendChild(ship.elem);
   }
+
+  ships[0].elem.style.top = '0px';
+  ships[0].elem.style.left = '0px';
+
+  ships[1].elem.style.top = 'calc(var(--square-size) * 6)';
+  ships[1].elem.style.left = '0px';
+
+  ships[2].elem.style.top = '0px';
+  ships[2].elem.style.left = 'calc(var(--square-size) * 2)';
+
+  ships[3].elem.style.top = 'calc(var(--square-size) * 4)';
+  ships[3].elem.style.left = 'calc(var(--square-size) * 2)';
+
+  ships[4].elem.style.top = 'calc(var(--square-size) * 8)';
+  ships[4].elem.style.left = 'calc(var(--square-size) * 2)';
 
   return harborElem;
 }
@@ -115,8 +128,9 @@ export function makeElemDraggable(elem) {
     elem.classList.add('moving');
 
     if (pointerOnGrid) {
-      dragElemOnGrid();
+      dragElemOnGrid(elem);
     } else {
+      document.querySelector('.harbor').appendChild(elem);
       if (e.type === 'touchmove') {
         mouseCoords.newX = mouseCoords.startX - e.touches[0].clientX;
         mouseCoords.newY = mouseCoords.startY - e.touches[0].clientY;
@@ -138,9 +152,11 @@ export function makeElemDraggable(elem) {
     }
   }
 
-  function dragElemOnGrid() {
+  function dragElemOnGrid(elem) {
     const grid = document.querySelector('.gameboard');
     const rect = grid.getBoundingClientRect();
+
+    grid.appendChild(elem);
 
     const moveX = gridCoords.x * (rect.width / 10);
     const moveY = gridCoords.y * (rect.height / 10);
@@ -156,7 +172,9 @@ export function makeElemDraggable(elem) {
     document.removeEventListener('touchmove', dragElem);
     document.removeEventListener('mousemove', dragElem);
 
-    setElemPos(elem, startLeft, startTop);
+    if (pointerOnGrid === false) {
+      //setElemPos(elem, startLeft, startTop);
+    }
   }
 }
 
